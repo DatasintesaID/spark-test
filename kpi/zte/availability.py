@@ -1,9 +1,9 @@
-from pyspark.sql import SparkSession, Row, functions as F, Column
+from utils.dict import dict_get_default_zero
 
 
-def availability():
-    return (100 * (F.when(F.get_json_object('counters', '$.C373230700').isNotNull(),
-                          F.get_json_object('counters', '$.C373230700')).otherwise(0) / F.col('duration')))
-
-# availability = (100 * (F.when(F.get_json_object('counters', '$.C373230700').isNotNull(),
-#                               F.get_json_object('counters', '$.C373230700}')).otherwise(0) / F.col('duration')))
+def availability(counters, duration):
+    c = dict_get_default_zero(counters, 'C373230700')
+    if duration == 0:
+        return 0
+    else:
+        return 100 * (c/duration)
